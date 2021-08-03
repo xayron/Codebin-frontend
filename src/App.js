@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import Home from './components/Home';
+import RawCode from './components/RawCode';
+import CodePage from './components/CodePage';
+import { makeStyles } from '@material-ui/core';
 
-function App() {
+const useStyles = makeStyles((theme) => ({
+  '@global': {
+    '*::-webkit-scrollbar': {
+      width: '0.25em',
+      height: '0.4em',
+    },
+    '*::-webkit-scrollbar-track': {
+      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+    },
+    '*::-webkit-scrollbar-thumb': {
+      backgroundColor: '#6D7183',
+      outline: '1px solid slategrey',
+      borderRadius: '0.2vw',
+      minHeight: '14vh',
+    },
+  },
+  mainBackground: {
+    background: "#0f0f0f",
+    height: '100vh',
+    width: '100vw',
+    overflow: 'hidden',
+  },
+  root: {
+    flexGrow: 1,
+  },
+}));
+
+export default function App() {
+  const classes = useStyles();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.mainBackground}>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/raw" render={(props) => <RawCode {...props}/>}/>
+          <Route path="*" render={(props) => <CodePage {...props}/>}/>
+        </Switch>
+      </Router>
     </div>
   );
 }
-
-export default App;
