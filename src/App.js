@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import { useEffect } from 'react';
 import Home from './components/Home';
 import RawCode from './components/RawCode';
 import CodePage from './components/CodePage';
@@ -38,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles();
+  /** Hook for changing title */
+  useEffect(() => {
+    document.title = 'Codebin';
+  });
+
   return (
     <div className={classes.mainBackground}>
       <Router>
@@ -45,8 +51,8 @@ export default function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/raw" render={(props) => <RawCode {...props}/>}/>
-          <Route path="*" render={(props) => <CodePage {...props}/>}/>
+          <Route path="/raw" render={(props) => <RawCode {...props} />} />
+          <Route path="*" render={(props) => <CodePage {...props} />} />
         </Switch>
       </Router>
     </div>
