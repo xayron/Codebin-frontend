@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles();
-  /** Hook for changing title */
   useEffect(() => {
     document.title = 'Codebin';
   });

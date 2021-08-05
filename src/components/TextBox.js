@@ -16,20 +16,20 @@ class TextBox extends React.Component {
     saveFile = async () => {
 
         await axios
-            .post(`http://localhost:8070/Project_Backend/saveNewFile`, {
+            .post(`https://codebin-backend.herokuapp.com/saveFile`, {
                 data: this.state.data,
                 extension: this.props.extension,
             })
             .then((response) => {
-                console.log(response);
+                console.log(response.data);
                 if (response.status === 200) {
                     this.props.history.push({
-                        pathname: "/" + response.data.fileName + '.' + this.props.extension,
+                        pathname: "/" + response.data + '.' + this.props.extension,
                         state: {
                             data: this.state.data,
                             lang: this.props.lang,
                             extension: this.props.extension,
-                            fileName: response.data.fileName
+                            fileName: response.data
                         }
                     });
                 }

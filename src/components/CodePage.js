@@ -19,11 +19,11 @@ class CodePage extends React.Component {
     }
 
     fetchFile = () => {
-        axios.get(`http://localhost:8070/Project_Backend/getFileData?fileName=${this.state.path}`)
+        axios.get(`https://codebin-backend.herokuapp.com/getFileData/${this.state.path}`)
             .then((response) => {
                 this.setState({
                     ...this.state,
-                    data: response.data.data?? '',
+                    data: response.data?? '',
                 });
             });
     }
