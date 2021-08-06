@@ -13,10 +13,12 @@ const useStyles = makeStyles((theme) => ({
         margin: '1.5vw 2vw',
         marginBottom: 0,
         background: 'lightblue',
+        textTransform: 'none',
         '&:hover': {
             color: 'black',
             margin: '1.5vw 2vw',
             marginBottom: 0,
+            textTransform: 'none',
             background: 'lightblue',
         },
     },

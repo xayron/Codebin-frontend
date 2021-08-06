@@ -3,6 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom'
 import axios from "axios";
+import { localApi, api } from '../data/api';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class TextBox extends React.Component {
     constructor(props) {
@@ -10,13 +12,17 @@ class TextBox extends React.Component {
         this.state = {
             maxRows: 1,
             data: '',
+            loading: false,
         };
     }
 
     saveFile = async () => {
-
+        this.setState({
+            ...this.state,
+            loading: true,
+        })
         await axios
-            .post(`https://codebin-backend.herokuapp.com/saveFile`, {
+            .post(`${api}/saveFile`, {
                 data: this.state.data,
                 extension: this.props.extension,
             })
@@ -54,23 +60,28 @@ class TextBox extends React.Component {
                 }}
                 onKeyPress={() => { this.setState({ maxRows: this.state.maxRows + 1 }) }}
                 inputProps={{
-                    style: { color: "white", height: '70vh', background: "#212121", padding: '1vw', overflow: 'auto', borderRadius: 10 },
+                    style: {
+                        color: "white", height: '70vh', background: "#212121",
+                        padding: '1vw', overflow: 'auto', borderRadius: 10
+                    },
                 }}
                 InputProps={{ disableUnderline: true }}
                 variant="filled"
             />
+            { this.state.loading ? <div
+                style={{
+                    position: 'absolute', left: '50%', top: '50%',
+                    transform: 'translate(-50%, -50%)'
+                }}
+            >
+                <CircularProgress />
+            </div> : null }
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button style={{ margin: '2vh 0vw', color: "#EF9A9A", fontWeight: "bold" }}
+                <Button style={{
+                    margin: '2vh 0vw', color: "#EF9A9A",
+                    fontWeight: "bold", textTransform: 'none'
+                }}
                     onClick={this.saveFile}
-                // component={Link} to={{
-                //     pathname: "/asdd",
-                //     state: {
-                //         data: this.state.data,
-                //         lang: this.props.lang,
-                //         extension: this.props.extension,
-                //         fileName: 'asdd'
-                //     }
-                // }}
                 >
                     Save
                 </Button>

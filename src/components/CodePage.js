@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from '../components/Head';
 import { Link } from 'react-router-dom'
+import { Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import DescriptionTwoToneIcon from '@material-ui/icons/DescriptionTwoTone';
 import GetAppTwoToneIcon from '@material-ui/icons/GetAppTwoTone';
@@ -8,6 +9,8 @@ import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from "axios";
+import { localApi, api } from '../data/api';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class CodePage extends React.Component {
     constructor(props) {
@@ -15,28 +18,45 @@ class CodePage extends React.Component {
         this.state = {
             data: '',
             path: props.location.pathname.substring(1),
+            loaded: false,
+            error: false,
         }
     }
 
     fetchFile = () => {
-        axios.get(`https://codebin-backend.herokuapp.com/getFileData/${this.state.path}`)
+        console.log(this.state);
+        axios.get(`${api}/getFileData/${this.state.path}`)
             .then((response) => {
-                this.setState({
-                    ...this.state,
-                    data: response.data?? '',
-                });
+                console.log(response);
+                if (response.statusText !== '') {
+                    this.setState({
+                        ...this.state,
+                        data: response.data ?? '',
+                        loaded: true,
+                    });
+                } else {
+                    this.setState({
+                        ...this.state,
+                        loaded: true,
+                        error: true
+                    });
+                }
             });
     }
 
     componentDidMount() {
-        this.setState({
-            ...this.state,
-            data: this.props.location.state?.data ?? '',
-            path: this.props.location.pathname.substring(1),
-        });
-        if(this.props.location.state == null) {
-            console.log("is empty");
+        if (this.props.location.state == null) {
+            console.log('empty');
             this.fetchFile();
+        } else {
+            console.log('Not empty');
+            console.log(`${api}/getFileData/${this.state.path}`);
+            this.setState({
+                ...this.state,
+                loaded: true,
+                data: this.props.location.state.data ?? '',
+                path: this.props.location.pathname.substring(1),
+            });
         }
     }
 
@@ -70,7 +90,6 @@ class CodePage extends React.Component {
                         <IconButton
                             component={Link} to={{
                                 pathname: "/raw",
-                                //data: this.props.location?.state.data?? ''
                                 data: this.state.data,
                             }}
                             style={{ color: "white" }} aria-label="view-raw">
@@ -82,10 +101,35 @@ class CodePage extends React.Component {
                     </div>
                 </div>
                 <div style={{ height: '90vh', overflow: 'auto' }}>
-                    <SyntaxHighlighter language="javascript" showLineNumbers style={atomDark} >
-                        {/* {this.props.location.state.data} */}
-                        {this.state.data}
-                    </SyntaxHighlighter>
+                    {this.state.loaded ?
+                        !this.state.error ? <SyntaxHighlighter language="javascript" showLineNumbers style={atomDark} >
+                            {this.state.data}
+                        </SyntaxHighlighter> : <div
+                            style={{
+                                position: 'absolute', left: '50%', top: '50%',
+                                transform: 'translate(-50%, -50%)'
+                            }}
+                        >
+                            <Typography
+                                style={{
+                                    color: "#E57373",
+                                    fontWeight: "bold",
+                                    fontSize: "calc(1.3 *calc(0.75vh + 0.75vw))",
+                                    marginBottom: 0,
+                                    textTransform: 'none',
+                                }}
+                            >
+                                File not found. Check link again !
+                            </Typography>
+                        </div> :
+                        <div
+                            style={{
+                                position: 'absolute', left: '50%', top: '50%',
+                                transform: 'translate(-50%, -50%)'
+                            }}
+                        >
+                            <CircularProgress />
+                        </div>}
                 </div>
             </div>
         );
