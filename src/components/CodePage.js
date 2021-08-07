@@ -25,7 +25,7 @@ class CodePage extends React.Component {
     }
 
     fetchFile = () => {
-        axios.get(`${localApi}/getFileData/${this.state.path}`)
+        axios.get(`${api}/getFileData/${this.state.path}`)
             .then((response) => {
                 if (response.data !== '') {
                     this.setState({

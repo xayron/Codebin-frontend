@@ -23,7 +23,7 @@ class TextBox extends React.Component {
             loading: true,
         })
         await axios
-            .post(`${localApi}/saveFile`, {
+            .post(`${api}/saveFile`, {
                 data: this.state.data,
                 extension: this.props.extension,
             })
