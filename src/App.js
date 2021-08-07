@@ -47,11 +47,9 @@ export default function App() {
     <div className={classes.mainBackground}>
       <Router>
         <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/raw" render={(props) => <RawCode {...props} />} />
-          <Route path="*" render={(props) => <CodePage {...props} />} />
+          <Route exact path="/" render={(props) => <Home {...props} />} />
+          <Route exact path="/raw" render={(props) => <RawCode {...props} />} />
+          <Route exact path="*" render={(props) => <CodePage {...props} />} />
         </Switch>
       </Router>
     </div>

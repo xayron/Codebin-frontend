@@ -11,23 +11,23 @@ class TextBox extends React.Component {
         super(props);
         this.state = {
             maxRows: 1,
-            data: '',
+            data: props.location.data ?? '',
             loading: false,
         };
     }
 
     saveFile = async () => {
+        if(this.state.data === '') return;
         this.setState({
             ...this.state,
             loading: true,
         })
         await axios
-            .post(`${api}/saveFile`, {
+            .post(`${localApi}/saveFile`, {
                 data: this.state.data,
                 extension: this.props.extension,
             })
             .then((response) => {
-                console.log(response.data);
                 if (response.status === 200) {
                     this.props.history.push({
                         pathname: "/" + response.data + '.' + this.props.extension,
@@ -51,6 +51,7 @@ class TextBox extends React.Component {
                 id="standard-multiline-flexible"
                 multiline
                 style={{ background: "#0f0f0f", width: '98vw' }}
+                value={this.state.data}
                 maxRows={this.state.maxRows}
                 onChange={(event) => {
                     this.setState({

@@ -19,7 +19,7 @@ function Head() {
               color: "white",
               fontWeight: "bold",
               // fontSize: "calc(1.3 *calc(0.75vh + 0.75vw))",
-              fontSize: 20,
+              fontSize: 25,
               marginBottom: 0,
               textTransform: 'none',
             }}

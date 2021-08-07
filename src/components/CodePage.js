@@ -18,39 +18,39 @@ class CodePage extends React.Component {
         this.state = {
             data: '',
             path: props.location.pathname.substring(1),
+            lang: props.location.state?.lang ?? '',
             loaded: false,
             error: false,
         }
     }
 
     fetchFile = () => {
-        console.log(this.state);
-        axios.get(`${api}/getFileData/${this.state.path}`)
+        axios.get(`${localApi}/getFileData/${this.state.path}`)
             .then((response) => {
-                console.log(response);
-                if (response.statusText !== '') {
+                if (response.data !== '') {
                     this.setState({
                         ...this.state,
                         data: response.data ?? '',
                         loaded: true,
                     });
+                } else if (response.data === '') {
+                    this.props.history.push({
+                        pathname: "/",
+                    });
                 } else {
                     this.setState({
                         ...this.state,
                         loaded: true,
-                        error: true
+                        error: true,
                     });
                 }
-            });
+            }).catch((error) => console.log(error));
     }
 
     componentDidMount() {
         if (this.props.location.state == null) {
-            console.log('empty');
             this.fetchFile();
         } else {
-            console.log('Not empty');
-            console.log(`${api}/getFileData/${this.state.path}`);
             this.setState({
                 ...this.state,
                 loaded: true,
@@ -61,6 +61,8 @@ class CodePage extends React.Component {
     }
 
     downloadFile = () => {
+        if (this.props.location.state === undefined)
+            return;
         const url = window.URL.createObjectURL(new Blob([this.props.location.state.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -84,7 +86,12 @@ class CodePage extends React.Component {
                         fontWeight: "bold",
                         margin: "1vw",
                     }}>
-                        <IconButton style={{ color: "white" }} aria-label="view-raw">
+                        <IconButton
+                            component={Link} to={{
+                                pathname: "/",
+                                data: this.state.data,
+                            }}
+                            style={{ color: "white" }} aria-label="view-raw">
                             <EditTwoToneIcon />
                         </IconButton>
                         <IconButton
@@ -102,26 +109,27 @@ class CodePage extends React.Component {
                 </div>
                 <div style={{ height: '90vh', overflow: 'auto' }}>
                     {this.state.loaded ?
-                        !this.state.error ? <SyntaxHighlighter language="javascript" showLineNumbers style={atomDark} >
-                            {this.state.data}
-                        </SyntaxHighlighter> : <div
-                            style={{
-                                position: 'absolute', left: '50%', top: '50%',
-                                transform: 'translate(-50%, -50%)'
-                            }}
-                        >
-                            <Typography
+                        !this.state.error ?
+                            <SyntaxHighlighter language={this.state.lang} showLineNumbers style={atomDark} >
+                                {this.state.data}
+                            </SyntaxHighlighter> : <div
                                 style={{
-                                    color: "#E57373",
-                                    fontWeight: "bold",
-                                    fontSize: "calc(1.3 *calc(0.75vh + 0.75vw))",
-                                    marginBottom: 0,
-                                    textTransform: 'none',
+                                    position: 'absolute', left: '50%', top: '50%',
+                                    transform: 'translate(-50%, -50%)'
                                 }}
                             >
-                                File not found. Check link again !
-                            </Typography>
-                        </div> :
+                                <Typography
+                                    style={{
+                                        color: "#E57373",
+                                        fontWeight: "bold",
+                                        fontSize: "calc(1.3 *calc(0.75vh + 0.75vw))",
+                                        marginBottom: 0,
+                                        textTransform: 'none',
+                                    }}
+                                >
+                                    Something went wrong. Please try again !
+                                </Typography>
+                            </div> :
                         <div
                             style={{
                                 position: 'absolute', left: '50%', top: '50%',

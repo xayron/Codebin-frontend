@@ -1,7 +1,7 @@
 const languages = [
     {
         "lang": "Text",
-        "value": "",
+        "value": "text",
         "extension" : "txt"
     },
     {
