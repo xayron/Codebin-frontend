@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom'
 import axios from "axios";
-import { localApi, api } from '../data/api';
+import { api } from '../data/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 class TextBox extends React.Component {

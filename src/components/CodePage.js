@@ -10,7 +10,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from "axios";
 import languages from '../data/constants';
-import { localApi, api } from '../data/api';
+import { api } from '../data/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 class CodePage extends React.Component {
@@ -37,7 +37,7 @@ class CodePage extends React.Component {
     }
 
     fetchFile = () => {
-        axios.get(`${localApi}/getFileData/${this.state.path}`)
+        axios.get(`${api}/getFileData/${this.state.path}`)
             .then((response) => {
                 if (response.data !== '') {
                     this.setState({
