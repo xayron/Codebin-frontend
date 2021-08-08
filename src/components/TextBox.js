@@ -23,7 +23,7 @@ class TextBox extends React.Component {
             loading: true,
         });
         if (this.props.location.data === undefined) {
-            await axios.post(`${localApi}/saveFile`, {
+            await axios.post(`${api}/saveFile`, {
                 data: this.state.data,
                 extension: this.props.extension,
             }).then((response) => {
@@ -39,7 +39,7 @@ class TextBox extends React.Component {
                 }
             }).catch((error) => console.log(error));
         } else {
-            await axios.post(`${localApi}/editFile`, {
+            await axios.post(`${api}/editFile`, {
                 data: this.state.data,
                 fileName: this.props.location.fileName,
             }).then((response) => {
