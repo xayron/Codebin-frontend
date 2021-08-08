@@ -9,6 +9,7 @@ import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from "axios";
+import languages from '../data/constants';
 import { localApi, api } from '../data/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -24,12 +25,24 @@ class CodePage extends React.Component {
         }
     }
 
+    getLanguage = (path) => {
+        var ext = path.split('.')[1];
+        var lang = '';
+        languages.forEach(element => {
+            if (element.extension === ext) {
+                lang = element.lang;
+            }
+        });
+        return lang;
+    }
+
     fetchFile = () => {
-        axios.get(`${api}/getFileData/${this.state.path}`)
+        axios.get(`${localApi}/getFileData/${this.state.path}`)
             .then((response) => {
                 if (response.data !== '') {
                     this.setState({
                         ...this.state,
+                        lang: this.getLanguage(this.state.path),
                         data: response.data ?? '',
                         loaded: true,
                     });
@@ -54,8 +67,10 @@ class CodePage extends React.Component {
             this.setState({
                 ...this.state,
                 loaded: true,
+                error: false,
                 data: this.props.location.state.data ?? '',
                 path: this.props.location.pathname.substring(1),
+                lang: this.props.location.state.lang ?? '',
             });
         }
     }
@@ -68,7 +83,7 @@ class CodePage extends React.Component {
         link.href = url;
         link.setAttribute(
             "download",
-            `${this.props.location.state.fileName}.${this.props.location.state.extension}`
+            `${this.state.path}`
         );
         document.body.appendChild(link);
         link.click();
@@ -90,6 +105,8 @@ class CodePage extends React.Component {
                             component={Link} to={{
                                 pathname: "/",
                                 data: this.state.data,
+                                lang: this.state.lang,
+                                fileName: this.state.path,
                             }}
                             style={{ color: "white" }} aria-label="view-raw">
                             <EditTwoToneIcon />

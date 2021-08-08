@@ -14,6 +14,14 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '0',
         minWidth: 130,
     },
+    menuPaper: {
+        maxHeight: '60vh',
+        color: 'white',
+        background: 'black',
+    },
+    hiddenScroll: { overflow: 'hidden' },
+    select: { color: 'white' },
+    icon: { color: 'white' },
 }));
 
 function Home(props) {
@@ -36,10 +44,16 @@ function Home(props) {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Head />
                 <FormControl className={classes.formControl}>
-                    <InputLabel>Language</InputLabel>
+                    <InputLabel style={{ color: "#EF9A9A", }}>Language</InputLabel>
                     <Select
+                        disableUnderline
                         value={lang}
                         onChange={handleChange}
+                        classes={{
+                            select: classes.select,
+                            icon: classes.icon,
+                        }}
+                        MenuProps={{ classes: { paper: classes.menuPaper } }}
                     >
                         {languages.map((lang) =>
                             <MenuItem

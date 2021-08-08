@@ -17,30 +17,43 @@ class TextBox extends React.Component {
     }
 
     saveFile = async () => {
-        if(this.state.data === '') return;
+        if (this.state.data === '') return;
         this.setState({
             ...this.state,
             loading: true,
-        })
-        await axios
-            .post(`${api}/saveFile`, {
+        });
+        if (this.props.location.data === undefined) {
+            await axios.post(`${localApi}/saveFile`, {
                 data: this.state.data,
                 extension: this.props.extension,
-            })
-            .then((response) => {
+            }).then((response) => {
+                console.log(response);
                 if (response.status === 200) {
                     this.props.history.push({
                         pathname: "/" + response.data + '.' + this.props.extension,
                         state: {
                             data: this.state.data,
                             lang: this.props.lang,
-                            extension: this.props.extension,
-                            fileName: response.data
                         }
                     });
                 }
-            })
-            .catch((error) => console.log(error));
+            }).catch((error) => console.log(error));
+        } else {
+            await axios.post(`${localApi}/editFile`, {
+                data: this.state.data,
+                fileName: this.props.location.fileName,
+            }).then((response) => {
+                if (response.status === 200) {
+                    this.props.history.push({
+                        pathname: "/" + response.data,
+                        state: {
+                            data: this.state.data,
+                            lang: this.props.location.lang,
+                        }
+                    });
+                }
+            }).catch((error) => console.log(error));
+        }
     };
 
 
@@ -69,19 +82,21 @@ class TextBox extends React.Component {
                 InputProps={{ disableUnderline: true }}
                 variant="filled"
             />
-            { this.state.loading ? <div
+            {this.state.loading ? <div
                 style={{
                     position: 'absolute', left: '50%', top: '50%',
                     transform: 'translate(-50%, -50%)'
                 }}
             >
                 <CircularProgress />
-            </div> : null }
+            </div> : null}
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button style={{
-                    margin: '2vh 0vw', color: "#EF9A9A",
-                    fontWeight: "bold", textTransform: 'none'
-                }}
+                <Button
+                    variant="contained"
+                    style={{
+                        margin: '2vh 1vw', background: "#EF9A9A",
+                        fontWeight: "bold", textTransform: 'none'
+                    }}
                     onClick={this.saveFile}
                 >
                     Save
